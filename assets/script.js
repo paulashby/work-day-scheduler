@@ -1,5 +1,8 @@
 $(document).ready(function(){
     
+    var WORK_DAY_LENGTH = 9;
+    var WORK_DAY_START = 9;
+    var timeblockContainer = $(".container");
     // Create current day and date string for jumbotron
     var todayStr = moment().format("dddd, MMMM Do");
     $("#currentDay").text(todayStr);
@@ -7,21 +10,48 @@ $(document).ready(function(){
     // Get any saved data from local storage (saved in a 'scheduled' array whose length is 9 - the number of timeblocks in the working day)
     // Add change event listener to .container - hopefully will be able to get events bubbling from timeblocks
     // - This will allow us to add/delete local storage scheduled entries
+    var scheduled = JSON.parse(localStorage.getItem("scheduled")); // null when not set
 
     // Get current hour using moment().format("k") - use 24 hour notation to avoid complications of pm
+    var currentHour = parseInt(moment().format("k"), 10);
+
     // Use for loop to create timeblocks - add 9 to iterator to get correct hour - the offset from 0 to 9am
+    for (var i = 0; i < WORK_DAY_LENGTH; i++) {
 
-    //      Timeblock: hour in dt, content in dd - text in span and button
+        // Timeblock: hour in dt, content in dd - text in span and button
+        var hourLabelElmt = $("<dt>");
 
-    //      Add any existing data from the local storage scheduled array
+        // Set hour label to ith hour of working day with am/pm suffix
+        hourLabelElmt.text(moment().hour(i + WORK_DAY_START).format("hA"));
+        timeblockContainer.append(hourLabelElmt);
 
-    //      Add appropriate class to timeblock -
-    //          if i < currHour class = 'past'
-    //          else if i === currHour class = 'present'
-    //          else class = 'future'
+        // Add any existing data from the local storage scheduled array
+        var hourEntryElmt = $("<dd>");
+        var hourEntryText = $("<span>");
+        var hourEntryBttn = $("<button>");
 
-    //      Add data-hour attribute to timeblock so we can store data on correct hour in scheduled array
+        // Make text content editable
+        hourEntryText.attr("contenteditable", "true");
+        // Add data-index attribute to timeblock so we can store data on correct hour in scheduled array
+        hourEntryBttn.attr("data-index", i);
 
-    //      set contenteditable attribute to true
+        hourEntryText.text("Test data");
+        hourEntryBttn.text("Save");
+
+        hourEntryElmt.append(hourEntryText);
+        hourEntryElmt.append(hourEntryBttn);
+
+        timeblockContainer.append(hourEntryElmt);
+
+        var timeClass = "future";
+        // Apply time status class 
+        if (i + WORK_DAY_START < currentHour) {
+            timeClass = "past";
+        } else if (i + WORK_DAY_START === currentHour) {
+            timeClass = "present";
+        }
+
+        hourLabelElmt.addClass(timeClass);
+    }
 
 });
