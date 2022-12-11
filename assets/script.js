@@ -7,10 +7,11 @@ $(document).ready(function(){
     var todayStr = moment().format("dddd, MMMM Do");
     $("#currentDay").text(todayStr);
 
-    // Get any saved data from local storage (saved in a 'scheduled' array whose length is 9 - the number of timeblocks in the working day)
-    // Add change event listener to .container - hopefully will be able to get events bubbling from timeblocks
     // - This will allow us to add/delete local storage scheduled entries
-    var scheduled = JSON.parse(localStorage.getItem("scheduled")); // null when not set
+    var scheduled = JSON.parse(localStorage.getItem("scheduled")) || []; // Empty array when not set
+
+    // Get any saved data from local storage (saved in a 'scheduled' array whose length is 9 - the number of timeblocks in the working day)
+    timeblockContainer.on("click", {scheduled: scheduled}, handleSave);
 
     // Get current hour using moment().format("k") - use 24 hour notation to avoid complications of pm
     var currentHour = parseInt(moment().format("k"), 10);
@@ -26,6 +27,7 @@ $(document).ready(function(){
         timeblockContainer.append(hourLabelElmt);
 
         // Add any existing data from the local storage scheduled array
+
         var hourEntryElmt = $("<dd>");
         var hourEntryText = $("<span>");
         var hourEntryBttn = $("<button>");
@@ -34,8 +36,15 @@ $(document).ready(function(){
         hourEntryText.attr("contenteditable", "true");
         // Add data-index attribute to timeblock so we can store data on correct hour in scheduled array
         hourEntryBttn.attr("data-index", i);
+        hourEntryBttn.addClass("saveBtn");
 
-        hourEntryText.text("Test data");
+        var textContent = scheduled[i];
+
+        if (textContent) {
+            hourEntryText.text(textContent);
+        } else {
+            hourEntryText.text("");
+        }
         hourEntryBttn.text("Save");
 
         hourEntryElmt.append(hourEntryText);
@@ -55,3 +64,15 @@ $(document).ready(function(){
     }
 
 });
+
+function handleSave(event) {
+    var clicked = $(event.target);
+    var scheduled = event.data.scheduled;
+
+    if (clicked.hasClass("save-bttn")) {
+        var scheduledIndex = parseInt(clicked.data("index"), 10);
+        var textContent = clicked.siblings("span").text();
+        scheduled[scheduledIndex] = textContent;
+        localStorage.setItem("scheduled", JSON.stringify(scheduled));
+    }
+}
