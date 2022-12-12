@@ -8,7 +8,7 @@ $(document).ready(function(){
     var todayStr = moment().format("dddd, MMMM Do");
     $("#currentDay").text(todayStr);
 
-    // Get any saved data from local storage 'scheduled' array
+    // We'll get saved data from local storage 'scheduled' array
     var scheduled = JSON.parse(localStorage.getItem("scheduled")) || []; // Empty array when not set
 
     // Handle save operation
@@ -21,10 +21,11 @@ $(document).ready(function(){
     // Create timeblocks
     for (var i = 0; i < WORK_DAY_LENGTH; i++) {
 
+        // Create entry for each timeblock
         var rowElmt = $("<li>");
         rowElmt.addClass("row");
 
-        // Create entry for each timeblock
+        // Create element to display the hour
         var hourLabelElmt = $("<p>");
 
         // Set hour label to ith hour of working day with am/pm suffix
@@ -32,11 +33,9 @@ $(document).ready(function(){
         hourLabelElmt.text(moment().hour(i + WORK_DAY_START).format("hA"));
         hourLabelElmt.addClass("hour");
 
+        // Create textarea to accept and display memos
         var hourMemoText = $("<textarea>");
         var hourEntryBttn = $("<button>");
-
-        // Make text content editable
-        hourMemoText.attr("contenteditable", "true");
 
         // Set default memo class
         var memoClass = "future";
@@ -47,15 +46,17 @@ $(document).ready(function(){
             memoClass = "present";
         }
 
+        // Assemble memo classes 
         hourMemoText.addClass("memo " + memoClass);
 
         // Add data-index attribute to timeblock so we can store data on correct hour in scheduled array
         hourEntryBttn.attr("data-index", i);
         hourEntryBttn.addClass("iconSave saveBtn");
 
+        // Get any existing memo for this hour
         var textContent = scheduled[i];
 
-        // Add any existing data for this hour
+        // Add memo to textarea or leave blank
         if (textContent) {
             hourMemoText.text(textContent);
         } else {
@@ -71,15 +72,13 @@ $(document).ready(function(){
         // Add row to container
         timeblockContainer.append(rowElmt);
     }
-
 });
 
 function handleSave(event) {
     var clicked = $(event.target);
-    var scheduled = event.data.scheduled;
-
     // Act only on Save button clicks
     if (clicked.hasClass("saveBtn")) {
+        var scheduled = event.data.scheduled;
         var scheduledIndex = parseInt(clicked.data("index"), 10);
         var textContent = clicked.siblings(".memo").val();
         // Update parsed array
