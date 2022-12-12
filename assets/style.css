@@ -35,28 +35,38 @@ body {
   line-height: 1;
 }
 
-textarea {
-  background: transparent;
-  border: none;
-  resize: none;
+.jumbotron {
+  background-color: transparent;
+  border-bottom: 10px solid #000;
+  border-radius: 0;
   color: #000;
-  border-left: 1px solid #000;
-  padding: 10px;
+  text-align: center;
 }
 
-.jumbotron {
-  text-align: center;
-  background-color: transparent;
-  color: #000;
-  border-radius: 0;
-  border-bottom: 10px solid #000;
+.display-3 {
+  font-size: 15vw;
+}
+
+.lead {
+  line-height: 1.5rem;
 }
 
 .row {
-  white-space: pre-wrap;
-  height: 80px;
   border-top: 1px solid #fff;
-  border-bottom
+  height: 80px;
+  white-space: pre-wrap;
+}
+
+.memo {
+  background: transparent;
+  border-left: 1px solid #000;
+  border: none;
+  color: #000;
+  height: 100%;
+  line-height: 1.25rem;
+  padding: 10px;
+  resize: none;
+  width: calc(100% - 160px);
 }
 
 .hour {
@@ -78,11 +88,11 @@ textarea {
 
 .saveBtn {
   border: none;
-  border-left: 1px solid #000;
-  border-bottom: 1px solid #fff;
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
   background-color: #06aed5;
+  border-bottom-right-radius: 15px;
+  border-bottom: 1px solid #fff;
+  border-left: 1px solid #000;
+  border-top-right-radius: 15px;
   color: #fff;
   font-size: 0;
 }
@@ -104,7 +114,8 @@ textarea {
   width: 80px;
 }
 
-.memo {
-  width: calc(100% - 160px);
-  height: 100%;
+@media screen and (min-width: 400px) {
+  .display-3 {
+    font-size: 4.5rem;
+  }
 }
